@@ -22,14 +22,41 @@ class ControllerPaymentBCPPayment extends Controller {
 	}
 
 	public function callback() {
-    //$this->log->write('Callback function was called');
+    $this->log->write('Callback function was called');
     $inputData = file_get_contents('php://input');
+    $this->log->write("input data: " . $inputData);
     $payResponse = json_decode($inputData);
+    $this->log->write("payResponse: " . $payResponse);
+
+    if (!function_exists('getallheaders'))
+    {
+        function getallheaders()
+        {
+           $headers = '';
+           foreach ($_SERVER as $name => $value)
+           {
+               if (substr($name, 0, 5) == 'HTTP_')
+               {
+                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+               }
+           }
+       return $headers;
+       }
+    }
+
+    function getSignature($headers) {
+        array_change_key_case($headers, CASE_LOWER);
+        $this->log->write("changedArray: " . print_r($headers));
+        return $headers['bpsignature'];
+    }
 
     //callback password
     if(($callbackPass = $this->config->get('bcp_payment_password'))!= NULL){
       $paymentHeaders = getallheaders();
-      $digest =  $paymentHeaders["Bpsignature"];
+      $this->log->write("paymentHeaders: " . print_r($paymentHeaders));
+      $digest = getSignature($paymentHeaders);
+
+      $this->log->write("digest: " . $digest);
 
       $hashMsg = $inputData . $callbackPass;
       $checkDigest = hash('sha256', $hashMsg);
@@ -45,8 +72,11 @@ class ControllerPaymentBCPPayment extends Controller {
       $security = 1;
     }
 
+    $this->log->write("security: " . $security);
+
     //payment status
     $paymentStatus = $payResponse -> status;
+    $this->log->write('paymentStatus: ' . $paymentStatus);
 
     //order id
     $preOrderId = json_decode($payResponse -> reference);
@@ -60,7 +90,10 @@ class ControllerPaymentBCPPayment extends Controller {
 
 
     if ($paymentStatus != NULL) {
+
+      $this->log->write("paymentStatus: " . $paymentStatus);
 				$order_status_id = $this->config->get('config_order_status_id');
+                $this->log->write("order_status_id: " . $order_status_id);
 
 				switch($paymentStatus) {
 					case 'confirmed':
@@ -188,7 +221,7 @@ class ControllerPaymentBCPPayment extends Controller {
 
     //callback password check
     if(($callbackPass = $this->config->get('bcp_payment_password'))!= NULL){
-      $digest =  $jHeaderArr[0]["Bpsignature"];
+      $digest = getSignature($jHeaderArr[0]);
 
 
       $hashMsg = $jBody . $callbackPass;
