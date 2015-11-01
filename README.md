@@ -2,9 +2,9 @@
 
 BitcoinPay payment module for Opencart v1.0
 
-### Version
-We recommend to switch to Opencart v2 module that is compatibile with Opencart v2 and higher.
+### Notice
+Bitcoin Opencart v1.0 is currently not maintained. We recommend to use Opencart bitcoin payment module v2.0 which is compatibile with Opencart v2. and higher version. Please follow Opencart v2.0 link:
 https://github.com/bitcoinpay/bitcoinpay-opencart-v2
 
-### Installation guide
+### Installation guide for Opencart v2.0
 https://www.youtube.com/watch?v=krYTsNzMQdY
