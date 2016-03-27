@@ -1,4 +1,5 @@
-# BitcoinPay Opencart v1.0 payment module is compatible with opencart v1.5 and higher. This plugin is not compatible with Opencart v2.0 and higher.
+# BitcoinPay Opencart v1.0
+Payment module is compatible with opencart v1.5 and higher. This plugin is not compatible with Opencart v2.0 and higher.
 
 
 ### Notice
